@@ -15,6 +15,7 @@ struct ContentView: View {
     
     @State private var showingScore = false //property to show the alert on demand
     @State private var scoreTitle = "" //Message für den Alert
+    @State private var score = 0
     
     
     var body: some View {
@@ -30,24 +31,34 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text("Guess the Flag")
-                    .font(.largeTitle.weight(.bold))
-                    .foregroundStyle(.white)
                 
-                
-                VStack(spacing: 15){
+                VStack{
+                    
+                    if score == 15 {
+                        Text("⭐️⭐️⭐️ You ve won!")
+                    } else if score >= 10 {
+                        Text ("⭐️⭐️")
+                    } else if score >= 5 {
+                        Text ("⭐️")
+                    }
+                    
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.ultraThinMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+             
+                Spacer()
+               
+                VStack(spacing: 20){
                     VStack {
-                        Text("Tap the flag of")
-                            .foregroundStyle(.secondary)
-                            .font(.subheadline.weight(.heavy))
-                        
                         
                         Text(countries[correctAnswer])
                             .font(.largeTitle.weight(.semibold))
                     }
                     
                     /*
-                     In der Schleife wird der closure-based Button initializaer verwendet.
+                     In der Schleife wird der closure-based Button initializer verwendet.
                      >Die erste closure ist die action closure -> what happens if the button is pressend
                      >Die zweite closure ist die label closure -> what it looks like
                      */
@@ -63,7 +74,7 @@ struct ContentView: View {
                             flagTapped(number)
                         } label: {
                             Image(countries[number])
-                                .clipShape(.capsule)
+                                .clipShape(.rect)
                                 .shadow(radius: 5)
                         }
                     }
@@ -71,24 +82,32 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
-                .background(.regularMaterial)
+                .background(.ultraThinMaterial)
                 .clipShape(.rect(cornerRadius: 20))
                 
                 Spacer()
-                Spacer()
                 
-                Text("Score: ???")
-                    .foregroundStyle(.white)
-                    .font(.title.bold())
+                VStack {
+                    Text("Score: \(score)")
+                        .foregroundStyle(.white)
+                        .font(.title.bold())
+                   
+                    
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.ultraThinMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+                
                 Spacer()
             }
             .padding()
         }
         //Alert Modifier -> Alert gets shown when showingScore Boolean is true
         .alert(scoreTitle, isPresented: $showingScore) {
-            Button("Continue", action: askQuestion)
+            Button("Continue", action: askQuestion) //Sobald der Butten gedrückt wird, wird showingScore wieder false
         } message: {
-            Text("Your Score is ???")
+            Text("Your Score is \(score)")
         }
         
     }
@@ -96,8 +115,10 @@ struct ContentView: View {
     func flagTapped (_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
+            score += 1
         } else {
             scoreTitle = "Wrong"
+            score -= 1
         }
         //das triggert den Alert Modifier
         showingScore = true
