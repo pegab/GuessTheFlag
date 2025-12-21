@@ -14,8 +14,13 @@ struct ContentView: View {
     @State private var correctAnswer = Int.random(in: 0...2) //Wählt zufällig eines der ersten 3 Elemente des Arrays aus.
     
     @State private var showingScore = false //property to show the alert on demand
-    @State private var scoreTitle = "" //Message für den Alert
+    @State private var endOfGame = false //property to show the end of game alert
+    @State private var scoreTitle = "" //Message für den Alert score
+    @State private var endOfGameTitle = "END OF GAME" //Message für den endofgame Alert
     @State private var score = 0
+    
+    @State private var wrongFlag: Int = 0
+    @State private var max15Questions: Int = 0
     
     
     var body: some View {
@@ -32,21 +37,35 @@ struct ContentView: View {
                 Spacer()
                 
                 
-                VStack{
+                HStack{
                     
-                    if score == 15 {
-                        Text("⭐️⭐️⭐️ You ve won!")
-                    } else if score >= 10 {
-                        Text ("⭐️⭐️")
-                    } else if score >= 5 {
-                        Text ("⭐️")
-                    }
+                    
+                    VStack {
+                        Text("\(max15Questions) / 15 Versuchen")
+                    }    .frame(maxWidth: .infinity)
+                        //.padding(.vertical, 10)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 20))
+                    
+                    
+                    
+                    VStack {
+                        
+                        if score == 15 {
+                            Text("⭐️⭐️⭐️ You ve won!")
+                            
+                        } else if score >= 10 {
+                            Text ("⭐️⭐️")
+                        } else if score >= 5 {
+                            Text ("⭐️")
+                        }
+                    }    .frame(maxWidth: .infinity)
+                        //.padding(.vertical, 10)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 20))
                     
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
-                .background(.ultraThinMaterial)
-                .clipShape(.rect(cornerRadius: 20))
+            
              
                 Spacer()
                
@@ -72,6 +91,8 @@ struct ContentView: View {
                     ForEach(0..<3) { number in
                         Button {
                             flagTapped(number)
+                            wrongFlag = number
+                            max15Questions += 1
                         } label: {
                             Image(countries[number])
                                 .clipShape(.rect)
@@ -107,7 +128,12 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion) //Sobald der Butten gedrückt wird, wird showingScore wieder false
         } message: {
-            Text("Your Score is \(score)")
+            Text("That is the flag of \(countries[wrongFlag])")
+        }
+        .alert(endOfGameTitle, isPresented: $endOfGame) {
+            Button("New Game", action: restartGame)
+        } message: {
+            Text("You ve managed a score of \(score)")
         }
         
     }
@@ -120,8 +146,13 @@ struct ContentView: View {
             scoreTitle = "Wrong"
             score -= 1
         }
-        //das triggert den Alert Modifier
+        //das triggert den Alert Modifier (score)
         showingScore = true
+        
+        //das triggert den EndofGame Alert
+        if max15Questions == 14 {
+            endOfGame = true
+        }
     }
     
     
@@ -131,6 +162,15 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
+    
+    func restartGame(){
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        score = 0
+        max15Questions = 0
+        
+    }
+   
     
 }
 
