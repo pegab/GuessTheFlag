@@ -41,7 +41,7 @@ struct ContentView: View {
                     
                     
                     VStack {
-                        Text("\(maxQuestions) / 8 Versuchen")
+                        Text("\(maxQuestions) / 8 Versuche")
                     }    .frame(maxWidth: .infinity)
                         //.padding(.vertical, 10)
                         .background(.ultraThinMaterial)
