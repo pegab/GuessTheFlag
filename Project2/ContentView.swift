@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var score = 0
     
     @State private var wrongFlag: Int = 0
-    @State private var max15Questions: Int = 0
+    @State private var maxQuestions: Int = 0
     
     
     var body: some View {
@@ -41,7 +41,7 @@ struct ContentView: View {
                     
                     
                     VStack {
-                        Text("\(max15Questions) / 15 Versuchen")
+                        Text("\(maxQuestions) / 8 Versuchen")
                     }    .frame(maxWidth: .infinity)
                         //.padding(.vertical, 10)
                         .background(.ultraThinMaterial)
@@ -51,12 +51,12 @@ struct ContentView: View {
                     
                     VStack {
                         
-                        if score == 15 {
-                            Text("⭐️⭐️⭐️ You ve won!")
+                        if score == 8 {
+                            Text("⭐️⭐️⭐️")
                             
-                        } else if score >= 10 {
-                            Text ("⭐️⭐️")
                         } else if score >= 5 {
+                            Text ("⭐️⭐️")
+                        } else if score >= 3 {
                             Text ("⭐️")
                         }
                     }    .frame(maxWidth: .infinity)
@@ -92,7 +92,7 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                             wrongFlag = number
-                            max15Questions += 1
+                            maxQuestions += 1
                         } label: {
                             Image(countries[number])
                                 .clipShape(.rect)
@@ -150,7 +150,7 @@ struct ContentView: View {
         showingScore = true
         
         //das triggert den EndofGame Alert
-        if max15Questions == 14 {
+        if maxQuestions == 7 {
             endOfGame = true
         }
     }
@@ -167,7 +167,7 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         score = 0
-        max15Questions = 0
+        maxQuestions = 0
         
     }
    
