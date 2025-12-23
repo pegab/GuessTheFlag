@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    //muss static sein, damit es outside of the instance gespeichert wird, ansonsten würde eine property eine andere lokale prop lesen wollen und das ist nicht erlaubt.
+   static let countriesNew = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland","Spain", "UK", "Ukraine", "US"]
     
-    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland",
-                     "Spain", "UK", "Ukraine", "US"].shuffled() // .shuffeld, damit das Array auch random ist.
+    @State private var countries = countriesNew.shuffled() // .shuffeld, damit das Array auch random ist.
     @State private var correctAnswer = Int.random(in: 0...2) //Wählt zufällig eines der ersten 3 Elemente des Arrays aus.
     
     @State private var showingScore = false //property to show the alert on demand
@@ -20,6 +21,7 @@ struct ContentView: View {
     @State private var score = 0
     
     @State private var wrongFlag: Int = 0
+    @State private var removeFlag: Int = 0
     @State private var maxQuestions: Int = 0
     
     
@@ -128,7 +130,13 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion) //Sobald der Butten gedrückt wird, wird showingScore wieder false
         } message: {
-            Text("That is the flag of \(countries[wrongFlag])")
+            let theFlags = ["UK", "US"]
+            
+            if theFlags.contains(countries[wrongFlag]) {
+                Text("That is the flag of the \(countries[wrongFlag])")
+            } else {
+                
+                Text("That is the flag of \(countries[wrongFlag])")}
         }
         .alert(endOfGameTitle, isPresented: $endOfGame) {
             Button("New Game", action: restartGame)
@@ -142,16 +150,20 @@ struct ContentView: View {
         if number == correctAnswer {
             scoreTitle = "Correct"
             score += 1
+            removeFlag = number
+            
         } else {
             scoreTitle = "Wrong"
             score -= 1
         }
-        //das triggert den Alert Modifier (score)
-        showingScore = true
+        
+        
         
         //das triggert den EndofGame Alert
         if maxQuestions == 7 {
             endOfGame = true
+        } else {
+            showingScore = true   //das triggert den Alert Modifier (score)
         }
     }
     
@@ -159,13 +171,15 @@ struct ContentView: View {
     //Diese func setzt das Array sowie die correctAnswer für einen neue Runde zurück
     
     func askQuestion() {
+        countries.remove(at: removeFlag)
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        
     }
     
+    //Diese func setzt alles für ein New Game zurück
     func restartGame(){
-        countries.shuffle()
-        correctAnswer = Int.random(in: 0...2)
+        countries = Self.countriesNew //muss mit Self. auferufen werden da es eine static prop ist
         score = 0
         maxQuestions = 0
         
