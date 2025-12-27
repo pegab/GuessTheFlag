@@ -96,9 +96,10 @@ struct ContentView: View {
                             wrongFlag = number
                             maxQuestions += 1
                         } label: {
-                            Image(countries[number])
+                            FlagImage(name: countries[number])
+                            /*Image(countries[number])
                                 .clipShape(.rect)
-                                .shadow(radius: 5)
+                                .shadow(radius: 5)*/
                         }
                     }
                     
