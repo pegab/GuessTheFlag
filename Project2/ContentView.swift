@@ -24,6 +24,10 @@ struct ContentView: View {
     @State private var removeFlag: Int = 0
     @State private var maxQuestions: Int = 0
     
+    @State private var animationAmount = [0.0, 0.0, 0.0]
+    @State private var opacityForFlag = 1.0
+   
+    
     
     var body: some View {
         
@@ -91,16 +95,29 @@ struct ContentView: View {
                      Button 2
                      */
                     ForEach(0..<3) { number in
+                        
                         Button {
+                            animationAmount = [0.0, 0.0, 0.0]
+                            withAnimation{
+                                animationAmount[number] = 360.0
+                                
+                                }
                             flagTapped(number)
                             wrongFlag = number
                             maxQuestions += 1
+                            
+                            
                         } label: {
                             FlagImage(name: countries[number])
                             /*Image(countries[number])
                                 .clipShape(.rect)
                                 .shadow(radius: 5)*/
-                        }
+                                
+                        }.rotation3DEffect(.degrees(animationAmount[number]), axis: (x: 0, y: 1, z: 0))
+                            .opacity(
+                                showingScore == false || wrongFlag == number  ? 1 : 0.25
+                            )
+                            .scaleEffect(showingScore == false || wrongFlag == number  ? 1 : 0.25)
                     }
                     
                 }
@@ -152,10 +169,12 @@ struct ContentView: View {
             scoreTitle = "Correct"
             score += 1
             removeFlag = number
+           
             
         } else {
             scoreTitle = "Wrong"
             score -= 1
+           
         }
         
         
@@ -185,6 +204,8 @@ struct ContentView: View {
         maxQuestions = 0
         
     }
+    
+    
    
     
 }
