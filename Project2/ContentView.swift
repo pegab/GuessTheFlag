@@ -103,7 +103,7 @@ struct ContentView: View {
                                 
                                 }
                             flagTapped(number)
-                            wrongFlag = number
+                            wrongFlag = number //wrongFlag bekommt die nummer vom button zugewiesen den der unser drückt
                             maxQuestions += 1
                             
                             
@@ -112,7 +112,8 @@ struct ContentView: View {
                             /*Image(countries[number])
                                 .clipShape(.rect)
                                 .shadow(radius: 5)*/
-                                
+                                //number ist in jedem Durchgang unterschiedlich, 0,1,2
+                            //die flaggen werden erst animiert sobald showingScore true ist, dann werden sie anhand des wertes von wrongFlag animiert
                         }.rotation3DEffect(.degrees(animationAmount[number]), axis: (x: 0, y: 1, z: 0))
                             .opacity(
                                 showingScore == false || wrongFlag == number  ? 1 : 0.25
